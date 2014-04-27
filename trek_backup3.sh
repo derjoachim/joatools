@@ -7,6 +7,8 @@
 # Checks whether an external partition was mounted
 # and rsyncs both /home and /etc subdirectories.
 
+# See https://github.com/derjoachim/joatools for more information
+
 # @TODO: 
 # - Put all subdirectories to be excluded into an array. This makes the script more configurable.
 # - Formerly, the rsync command for /home was called with sudo. Not sure why needed. Have to check whether still necassary.
@@ -31,8 +33,6 @@ mymountpoint="/media/truecrypt1/"
 automount=1
 autounmount=1
 
-# 20070726: better parameter handling
-#  http://www.shelldorado.com/goodcoding/cmdargs.html
 while getopts ahd:nu opt
 do
     case "$opt" in
