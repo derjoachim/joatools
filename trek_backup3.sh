@@ -73,7 +73,7 @@ if [ -d /media/truecrypt1/joachim ]; then
 	echo "--- External truecrypt container mounted ---"
 	echo ""
 	echo "--- Collecting current package list ---"
-	yaourt -Q > ~/package_list_mosquito
+	yaourt -Qqet > ~/package_list_mosquito
 	echo ""
 	echo "--- removing plugin stuff ---"
 	rm -rf ~/.adobe
