@@ -40,9 +40,10 @@ do
     	h)  
 		echo "a : disable automatic mounting and unmounting. Useful for further fiddling."
 	  	echo "d /dev/yourdevice: manual device override."
-	  	echo "h : print this help message.";
-		echo "n : uses the -n switch in the rsync command. This essentialy means 'do nothing' and it just shows what would be done if you hadn't chickened out.";	
-		exit 1;;
+	  	echo "h : print this help message."
+		echo "n : uses the -n switch in the rsync command. This essentialy means 'do nothing' and it just shows what would be done if you hadn't chickened out."
+		echo "u : disable automatic unmounting. Keeps a volume mounted after making a backup."
+		exit 0;;
       	d) mydevice="$OPTARG";;
 	 	n) echo "--- Invoking dry-run mode. Chicken! *cluck* *cluck* ---";rsyncopt="-avzn --delete";;
 		u) echo "--- Automatic unmounting disabled ---";autounmount=0;;
