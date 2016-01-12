@@ -18,23 +18,23 @@
 # @Param d /dev/partition) Manual path to HDD device
 # @Param h) Show a more helpful message and exit gracefully
 # @Param n) Chicken mode: do not do anything. Only show what would be done if you had shown some guts. :)
-# @Param u) Disable automatic unmounting. Keeps volume mounted upon exit.
+# @Param u) Disable automatic unmounting. Keeps truecrypt volume mounted upon exit.
 
 echo "--- Starting automatic backup script ---"
 echo "--- Current date is `date` ---"
 
-#Basename of the tomb container, @TODO: put into config
-basename="foo"
+#Basename of the tomb container
+basename="mycontainer"
 
 # Standard variables, to be set with optional parameters 
 rsyncopt="-av --delete"
 
-# the name of my tomb container. Dependent on distro. @TODO: Put into config
+# the name of my tomb container. Dependent on distro. 
 mydevice="/path/to/$basename.tomb"
-mykey="/another/path/to/$basename.tomb.key"
+mypic="/path/to/a/nice/picture.jpg"
 
-# the name of the mount point @TODO: Put into config
-mymountpoint="/path/to/mount/point/for/$basename/"
+# the name of the mount point
+mymountpoint="/path/to/mountpoint/which/contains/$basename/"
 automount=1
 autounmount=1
 
@@ -72,11 +72,12 @@ if [ $automount = "1" ]
 then
 	echo ""
 	echo "-- Trying to mount the encrypted container--"
-	tomb open $mydevice -k $mykey
+    tomb exhume $mypic > /tmp/$basename.tomb.key
+	tomb open $mydevice -k /tmp/$basename.tomb.key
 fi
 
 
-if [ -d /media/$basename/joachim ]; then
+if [ -d $mymountpoint ]; then
 	echo ""
 	echo "--- Container mounted ---"
 	echo ""
@@ -89,7 +90,7 @@ if [ -d /media/$basename/joachim ]; then
 	echo ""
 	echo "--- syncing home directories ---"
 	
-    rsync $rsyncopt --exclude '.gvfs/' --exclude '.cache' --exclude 'Video/' --exclude 'Music/' --exclude 'backups/' --exclude '.local/share/Trash/' ~ $mymountpoint
+    rsync $rsyncopt --exclude '.dbus/' --exclude '.gvfs/' --exclude '.cache' --exclude 'Video/' --exclude 'Music/' --exclude 'backups/' --exclude '.local/share/Trash/' ~ $mymountpoint
 	echo ""
 	echo "--- syncing etc ---"
 	sudo rsync $rsyncopt /etc $mymountpoint
@@ -98,15 +99,16 @@ if [ -d /media/$basename/joachim ]; then
 	if [[ $automount = "1" && $autounmount = "1" ]]; then
 		echo ""
 		echo "-- Unmounting container --"
-		tomb close
+		tomb close $basename
+        rm -f /tmp/$basename.tomb.key
 	fi
 fi
 
 # 20140427 : Backup important documents to my NAS 
-if [ -d /net/shepherd.local/volume1/homes/joachim/Documents ]; then
+if [ -d /net/path/to/my/nas ]; then
 	echo ""
 	echo "-- Backing up important documents to configured NAS --"
-	rsync $rsyncopt ~/Documents/ /net/shepherd.local/volume1/homes/joachim/Documents/ 
+	rsync $rsyncopt ~/Documents/ /net/path/to/my/nas 
 fi
 
 echo ""
