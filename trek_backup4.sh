@@ -28,6 +28,7 @@ basename="mycontainer"
 
 # Standard variables, to be set with optional parameters 
 rsyncopt="-av --delete"
+rsyncoptnfs="-Orvzl --delete"
 
 # the name of my tomb container. Dependent on distro. 
 mydevice="/path/to/$basename.tomb"
@@ -108,7 +109,7 @@ fi
 if [ -d /net/path/to/my/nas ]; then
 	echo ""
 	echo "-- Backing up important documents to configured NAS --"
-	rsync $rsyncopt ~/Documents/ /net/path/to/my/nas 
+	rsync $rsyncoptnfs ~/Documents/ /net/path/to/my/nas 
 fi
 
 echo ""
