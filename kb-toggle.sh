@@ -14,5 +14,9 @@ fi
 
 setxkbmap $CURRENT_LAYOUT -variant $NEW_VARIANT
 
+# Force a restart on i3blocks
+pkill -SIGRTMIN+11 i3blocks
+
+# Also send a friendly notification
 notify-send "Keyboard layout set to $CURRENT_LAYOUT, $NEW_VARIANT"
 exit 0
