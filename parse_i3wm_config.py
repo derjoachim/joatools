@@ -56,15 +56,6 @@ class CellRendererTextWindow(Gtk.Window):
         Gtk.main_quit()
         
 
-""" Render popup (gtk2/3) and open it """
-def configRenderer(dict_config):
-    win = Gtk.Window()
-    win.connect("delete-event", Gtk.main_quit)
-    win.show_all()
-    Gtk.main()
-    return ""
-
-
 """ possible config file paths as per the i3 man page """
 def getConfigPath():
     paths = ['~/.config/i3/config',
@@ -109,7 +100,6 @@ if current_config_path == False:
     message = "No i3wm configuration file was found"
 else: 
     myconfig = parseConfigFile(current_config_path)
-    #configRenderer(myconfig)
     win = CellRendererTextWindow(myconfig)
     win.connect("delete-event", Gtk.main_quit)
     win.show_all()
