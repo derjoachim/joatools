@@ -12,7 +12,7 @@ from gi.repository import Gtk
 
 class CellRendererTextWindow(Gtk.Window):
     def __init__(self,dict_config, path):
-        Gtk.Window.__init__(self, title="Help " + path)
+        Gtk.Window.__init__(self, title='Help ' + path)
 
         self.set_border_width(10)
 
@@ -32,24 +32,23 @@ class CellRendererTextWindow(Gtk.Window):
         treeview = Gtk.TreeView(model=self.liststore)
         
         sct = Gtk.CellRendererText()
-        column_text = Gtk.TreeViewColumn("Shortcut", sct, text=0)
+        column_text = Gtk.TreeViewColumn('Shortcut', sct, text=0)
         treeview.append_column(column_text)
 
         dtext = Gtk.CellRendererText()
-        desc_column_text = Gtk.TreeViewColumn("Description", dtext, text=1)
+        desc_column_text = Gtk.TreeViewColumn('Description', dtext, text=1)
         treeview.append_column(desc_column_text)
 
         self.add(treeview)
 
-        button = Gtk.Button("Close")
-        button.connect("clicked", self.on_close_clicked)
+        button = Gtk.Button('Close')
+        button.connect('clicked', self.on_close_clicked)
 
         self.scrollable_treelist = Gtk.ScrolledWindow()
         self.scrollable_treelist.set_vexpand(True)
-        self.grid.attach(self.scrollable_treelist, 0, 0, 8, 10)
+        self.grid.attach(self.scrollable_treelist, 0, 0, 12, 16)
         self.grid.attach_next_to(button, self.scrollable_treelist,
                 Gtk.PositionType.BOTTOM, 1, 1)
-
         self.scrollable_treelist.add(treeview)
         self.show_all()
 
@@ -87,7 +86,10 @@ def parseConfigFile(config_path):
             if words[0] == 'set' and words[1].startswith('$'):
                 myvars[words[1]] = ' '.join(words[2:]).rstrip()
             elif words[0] == 'bindsym':
-                tmpkeys = words[1].split('+')
+                pos = 1
+                if words[1].startswith('--'):
+                    pos = 2
+                tmpkeys = words[pos].split('+')
                 for pos, subkey in enumerate(tmpkeys):
                     if subkey.startswith('$'):
                         tmpkeys[pos] = myvars[subkey]
@@ -105,10 +107,10 @@ def sortbyshortcut(dcfg):
     return collections.OrderedDict(sorted(dcfg.items()))
 
 
-message = ""
+message = ''
 current_config_path = getConfigPath()
 if current_config_path == False:
-    message = "No i3wm configuration file was found"
+    message = 'No i3wm configuration file was found'
     """ TODO Better error handling"""
 else: 
     myconfig = parseConfigFile(current_config_path)
@@ -116,7 +118,7 @@ else:
     print(myconfig)
     
     win = CellRendererTextWindow(myconfig, current_config_path)
-    win.connect("delete-event", Gtk.main_quit)
+    win.connect('delete-event', Gtk.main_quit)
     win.show_all()
     Gtk.main()
     
