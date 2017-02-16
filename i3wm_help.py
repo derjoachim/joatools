@@ -1,8 +1,9 @@
-"""
-Parse the i3 config file, collect and parse shortcuts and display on screen
-
-Author Joachim van de Haterd <joachim@derjoachim.nl>
-"""
+#!/usr/bin/python3
+#
+#Parse the i3 config file, collect and parse shortcuts and display on screen
+#
+#Author Joachim van de Haterd <joachim@derjoachim.nl>
+#
 import string
 import os
 import gi
@@ -107,16 +108,13 @@ def sortbyshortcut(dcfg):
     return collections.OrderedDict(sorted(dcfg.items()))
 
 
-message = ''
 current_config_path = getConfigPath()
 if current_config_path == False:
-    message = 'No i3wm configuration file was found'
+    print('No i3wm configuration file was found')
     """ TODO Better error handling"""
 else: 
     myconfig = parseConfigFile(current_config_path)
     myconfig = sortbyshortcut(myconfig)
-    print(myconfig)
-    
     win = CellRendererTextWindow(myconfig, current_config_path)
     win.connect('delete-event', Gtk.main_quit)
     win.show_all()
