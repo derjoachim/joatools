@@ -91,7 +91,9 @@ if [ -d $mymountpoint ]; then
 	echo ""
 	echo "--- syncing home directories ---"
 	
-    rsync $rsyncopt --exclude '.dbus/' --exclude '.gvfs/' --exclude '.cache' --exclude 'Video/' --exclude 'Music/' --exclude 'backups/' --exclude '.local/share/Trash/' ~ $mymountpoint
+    rsync $rsyncopt --exclude '.dbus/' --exclude '.gvfs/' --exclude '.cache' \
+    --exclude 'Video/' --exclude 'Music/' --exclude 'backups/' --exclude \
+    '.local/share/Trash/' --exclude 'trizen-joachim/' ~ $mymountpoint
 	echo ""
 	echo "--- syncing etc ---"
 	sudo rsync $rsyncopt /etc $mymountpoint
