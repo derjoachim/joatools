@@ -4,6 +4,10 @@
 # JH: Version 3 was written March 2011. The old disk has been replaced with a more modern container.
 # JH: Version 3.5 was written April 2014. Some stuff is being backed up to and from my NAS as well.
 # JH: Version 4 was written December 2015. Truecrypt has been replaced by tomb.
+# JH: Version 4.1-ish December 2020: 
+# - Removed the NAS-related code
+# - Udated exclude paths
+# - Added disabling / re-enabling swap
 
 # Checks whether an external partition was mounted
 # and rsyncs both /home and /etc subdirectories.
@@ -24,18 +28,18 @@ echo "--- Starting automatic backup script ---"
 echo "--- Current date is `date` ---"
 
 #Basename of the tomb container
-basename="mycontainer"
+basename="`hostname`-v2"
 
 # Standard variables, to be set with optional parameters 
 rsyncopt="-av --delete"
 rsyncoptnfs="-Orvzl --delete"
 
 # the name of my tomb container. Dependent on distro. 
-mydevice="/path/to/$basename.tomb"
-mypic="/path/to/a/nice/picture.jpg"
+mydevice="/run/media/$USER/partitionLabel/$basename.tomb" # change as required
+mypic="/path/to/steghidden/picture.jpg" # Change as required
 
 # the name of the mount point
-mymountpoint="/path/to/mountpoint/which/contains/$basename/"
+mymountpoint="/run/media/$USER/$basename/"
 automount=1
 autounmount=1
 
@@ -72,8 +76,12 @@ fi
 if [ $automount = "1" ]
 then
 	echo ""
+	echo "-- Disabling swap--"
+	sudo swapoff -a
+	echo ""
+	echo ""
 	echo "-- Trying to mount the encrypted container--"
-    tomb exhume $mypic > /tmp/$basename.tomb.key
+	tomb exhume $mypic > /tmp/$basename.tomb.key
 	tomb open $mydevice -k /tmp/$basename.tomb.key
 fi
 
@@ -82,17 +90,11 @@ if [ -d $mymountpoint ]; then
 	echo ""
 	echo "--- Container mounted ---"
 	echo ""
-	echo "--- Collecting current package list ---"
-	yaourt -Qqet > ~/package_list_mosquito
-	echo ""
-	echo "--- removing plugin stuff ---"
-	rm -rf ~/.adobe
-	rm -rf ~/.macromedia
 	echo ""
 	echo "--- syncing home directories ---"
 	
     rsync $rsyncopt --exclude '.dbus/' --exclude '.gvfs/' --exclude '.cache' \
-    --exclude 'Video/' --exclude 'Music/' --exclude 'backups/' --exclude \
+    --exclude 'Video/' --exclude 'Music/'  --exclude \
     '.local/share/Trash/' --exclude 'trizen-joachim/' ~ $mymountpoint
 	echo ""
 	echo "--- syncing etc ---"
@@ -107,12 +109,9 @@ if [ -d $mymountpoint ]; then
 	fi
 fi
 
-# 20140427 : Backup important documents to my NAS 
-if [ -d /net/path/to/my/nas ]; then
-	echo ""
-	echo "-- Backing up important documents to configured NAS --"
-	rsync $rsyncoptnfs ~/Documents/ /net/path/to/my/nas 
-fi
 
+echo ""
+echo "--- Re-enabling swap--"
+sudo swapon -a
 echo ""
 echo "-- Done --"
