@@ -16,9 +16,12 @@ echo "-------------------------"
 mysqldump -u root -p --all-databases > ~/backups/mariadb/backups-$CURRENTDATE.sql
 bzip2 -9 ~/backups/mariadb/backups-$CURRENTDATE.sql
 
-#echo "Cleaning up old backup files"
-#echo "----------------------------"
-#cd ~/backups/pacman
-#find . -mtime +30 -delete
+echo "Cleaning up old backup files"
+echo "----------------------------"
+cd ~/backups/pacman
+find . -mtime +30 -type f -delete
+cd ~/backups/mariadb
+find . -mtime +30 -type f -delete
 
 echo "Done"
+exit 0
