@@ -20,6 +20,7 @@ $BORG_EXEC					\
 	--stats					\
 	--progress				\
 	--exclude-from $BORG_EXCLUDE_FILE	\
+	--compression zstd,10                   \
 	::{hostname}-{now:%Y-%m-%dT%H:%M:%S}	\
 	~ 					
 
